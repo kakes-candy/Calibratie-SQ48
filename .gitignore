@@ -1,0 +1,7 @@
+*.pdf
+*.log
+*.gz
+/data/
+/*.tex
+.Rhistory
+secret.json

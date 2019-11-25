@@ -1,0 +1,121 @@
+\documentclass{article}
+
+
+
+<<gegevens_preamble, echo=FALSE, message=FALSE, warning=FALSE>>=
+
+# Jaar instellen
+Jaar <- 2019
+
+titel_header <- "Data SQ-48 afnames HSK"
+
+library(knitr)
+
+
+@
+
+
+
+\input{latex_hulpbestanden/standard_preamble.tex}
+
+\usepackage{hyperref}
+\usepackage[dvipsnames]{xcolor}
+
+% Titel die in de header gaat verschijnen
+\fancyhead[C]{\Sexpr{titel_header}} 
+
+
+
+
+
+<<R_scripts, echo=FALSE, message=FALSE, warning=FALSE>>=
+
+read_chunk(path = "voorbereiding.R")
+
+@
+
+<<voorbereiding, echo=FALSE, message=FALSE, warning=FALSE>>=
+
+
+@
+
+<<datum, echo=FALSE, message=FALSE, warning=FALSE>>=
+datum_creatie <- format(Sys.Date(), format = "%d-%m-%Y")
+
+
+@
+
+
+\author{Niels Kakes}
+\date{\Sexpr{datum_creatie}}
+
+\begin{document}
+
+\section*{Algemeen}
+\par
+Het bestand \emph{\detokenize{\Sexpr{bestandsnaam}}} bevat gegevens die nodig zijn voor het calibreren van de t-score van de Sq-48 vragenlijst, op de populatie van HSK.
+\par
+De gegevens zijn afkomstig uit de database van WeCare, het zorgregistratiesysteem van de HSK groep. De metingen zijn gedaan in het testplatform van Interapy, dat gekoppeld is aan WeCare. De data is door de ICT afdeling van HSK geexporteerd. Daarbij zijn in overleg met de opdrachtgever keuzes gemaakt over welke gegevens worden opgenomen. 
+\par
+Deze dataset bevat metingen die zijn gedaan in het kader van behandeltrajecten in de BasisGGZ of Gespecialiseerde GGZ. Er is sprake van een traject als er ten minste 1 onderzoekssessie en 1 behandelsessie heeft plaats gevonden. Alleen trajecten waar ten minste 1 meting is gedaan zijn opgenomen. 
+\par
+De gegevens in de dataset zijn geanonimiseerd. Clienten en trajecten hebben een uniek nummer gekreken, dat los staat van de systemen binnen HSK. Van de clienten zijn alleen algemene achtergrondvariabelen opgenomen.
+
+\subsection*{kenmerken dataset}
+
+\begin{itemize}
+  \item bestandsnaam: \detokenize{\Sexpr{bestandsnaam}}
+  \item datum aanmaak: \Sexpr{datum_creatie}
+  \item aantal rijen: \Sexpr{nrow(prepare_for_export)}
+  \item aantal unieke clienten: \Sexpr{n_distinct(prepare_for_export$client_id)}
+\end{itemize}
+
+\subsection*{variabelen}
+
+\emph{\detokenize{\Sexpr{paste(names(prepare_for_export), collapse = ', ')}}}
+
+
+\section*{Definitie data}
+
+\begin{itemize}
+  
+    \item \textbf{\detokenize{dossier_id}}: Uniek id van het behandeltraject
+    \item \textbf{\detokenize{dossier_datum_registratie}}: datum waarop het behandeltraject is aangemaakt in WeCare
+    \item \textbf{\detokenize{traject_status}}: status van het behandeltraject.
+    \item \textbf{\detokenize{zorgzwaarte_initieel}}: zorgzwaarte zoals ingeschat bij begin van het behandeltraject. Alleen relevant in de Basis GGZ, waarbij er onderscheid kan zijn tussen 'gewone' Basis GGZ en Basis GGZ Zeer intensief. 
+    \item \textbf{\detokenize{zorgzwaarte_actueel}}: Zorgzwaarte zoals deze is op het moment van rapporteren. In de Basis GGZ kan dit oplopen van bggz naar bggz zeer intensief 
+    \item \textbf{\detokenize{client_id}}: Uniek van de client 
+    \item \textbf{\detokenize{SES_status}}: sociaal economische status berekend op basis van postcodegebied
+    \item \textbf{\detokenize{client_leeftijd}}: leeftijd van de client op moment van rapporteren
+    \item \textbf{\detokenize{client_geslacht}}: geslacht van de client
+    \item \textbf{\detokenize{pv_opleiding}}: opleidingsniveau zoals gerapporteerd door de client in de Persoonlijke Vragenlijst
+    \item \textbf{\detokenize{pv_leefsituatie}}: leefsituatie zoals gerapporteerd door de client in de Persoonlijke Vragenlijst
+    \item \textbf{\detokenize{prestatie}}: code van de geleverde prestatie die is gedeclareerd bij de verzekeraar
+    \item \textbf{\detokenize{prestatie_omschrijving}}: omschrijving van de geleverde prestatie die is gedeclareerd bij de verzekeraar
+    \item \textbf{\detokenize{datum_start_onderzoek}}: datum van de eerste sessie in het onderzoek waarbij de client aanwezig was
+    \item \textbf{\detokenize{datum_start_behandeling}}: datum van de eerste sessie in de behandeling waarbij de client aanwezig was
+    \item \textbf{\detokenize{test_datum_ingevuld}}: datum waarop de test (sq4-8) die het dichtst bij de start van het traject ligt. De start van het traject is de eerste van \detokenize{datum_start_onderzoek of datum_start_behandeling}. 
+    \item \textbf{\detokenize{test_score_totaal}}: totaalscore van de sq-48
+    \item \textbf{\detokenize{test_score_schaal_vijandigheid}}: schaalscore sq-48 vijandigheid
+    \item \textbf{\detokenize{test_score_schaal_agorafobie}}: schaalscore sq-48 agorafobie
+    \item \textbf{\detokenize{test_score_schaal_angst}}: schaalscore sq-48 angst
+    \item \textbf{\detokenize{test_score_schaal_cognitieve_klachten}}: schaalscore sq-48 cognitieve klachten
+    \item \textbf{\detokenize{test_score_schaal_depressie}}: schaalscore sq-48 depressie 
+    \item \textbf{\detokenize{test_score_schaal_somatische_klachten}}: schaalscore sq-48somatische klachten
+    \item \textbf{\detokenize{test_score_schaal_sociale_fobie}}: schaalscore sq-48 sociale fobie
+    \item \textbf{\detokenize{test_score_schaal_vitaliteit}}: schaalscore sq-48 vitaliteit
+    \item \textbf{\detokenize{test_score_schaal_werk_studie}}: schaalscore sq-48 werk en studie
+    \item \textbf{\detokenize{test_score_schaal_werkzaam}}: schaalscore sq-48 werkzaam
+    \item \textbf{\detokenize{diagnose_datum_hoofdclassificatie}}: datum waarop diagnose is vastgesteld
+    \item \textbf{\detokenize{diagnose_primair}}: primaire diagnose
+    \item \textbf{\detokenize{diagnose_2}}: eerste nevendiagnose
+    \item \textbf{\detokenize{diagnose_3}}: tweede nevendiagnose
+    \item \textbf{\detokenize{diagnose_4}}: derde nevendiagnose
+    \item \textbf{\detokenize{diagnose_5}}: vieder nevendiagnose
+\end{itemize}
+
+
+
+
+
+\end{document}
